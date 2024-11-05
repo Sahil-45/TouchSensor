@@ -1,0 +1,180 @@
+1 Touch sensor
+grn to grn
+vcc to 5v
+sig-2
+const int Sensor_PIN=7;
+int lastState = LOW;
+int currentState;
+void setup() {
+  Serial.begin(9600);
+  pinMode(Sensor_PIN,INPUT);
+}
+void loop() {
+ currentState = digitalRead(Sensor_PIN);
+ if(lastState==LOW &amp;&amp; currentState==HIGH)
+ Serial.println(&quot;The sensor is touched&quot;);
+ else if(lastState==HIGH &amp;&amp; currentState == LOW)
+ Serial.println(&quot;The sensor is released&quot;);
+ lastState = currentState;
+}
+
+2 LDR module
+g-g
+5v-5v
+A-A1
+void setup()
+{
+ pinMode (A0,INPUT);
+Serial.begin(9600);
+}
+void loop()
+{
+  int s=analogRead (A0);
+  Serial.println(s);
+  if(s&lt;50){
+    Serial.println(&quot;DARK&quot;);
+    delay(1000);
+  }
+  else if (s&gt;550){
+    Serial.println(&quot;BRIGHT&quot;);
+    delay(1000);
+  }
+  else{
+    Serial.println(&quot;DIM&quot;);
+    delay(1000);
+  }
+  }
+
+3 TEMP ND HUMIDITY
+G-G
+5V-5V
+DATA-2
+#include "DHT.h"
+#define DHTPIN 2 // Digital pin connected to the DHT sensor
+#define DHTTYPE DHT11 // DHT 11 sensor
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  delay(2000); // Wait a few seconds between measurements
+  
+  float h = dht.readHumidity(); // Read humidity
+  float t = dht.readTemperature(); // Read temperature in Celsius
+  
+  // Check if any reads failed and exit early
+  if (isnan(h) || isnan(t)) {
+    Serial.println(F("Failed to read from DHT sensor!"));
+    return;
+  }
+  
+  // Convert Celsius to Fahrenheit
+  float f = t * 1.8 + 32;
+
+  // Compute heat index
+  float hif = dht.computeHeatIndex(f, h); // Heat index in Fahrenheit
+  float hic = dht.computeHeatIndex(t, h, false); // Heat index in Celsius
+  
+  // Display results
+  Serial.print(F("Humidity: "));
+  Serial.print(h);
+  Serial.print(F("% Temperature: "));
+  Serial.print(t);
+  Serial.print(F("°C "));
+  Serial.print(f);
+  Serial.print(F("°F Heat index: "));
+  Serial.print(hic);
+  Serial.print(F("°C "));
+  Serial.print(hif);
+  Serial.println(F("°F"));
+}
+
+4 Servo motor
+data-5
+# include&lt<Servo.h>
+Servo myservo; // Object [ myservo] of servo Library is created
+
+Servo myservo;
+void setup() {
+  myservo.attach(9);
+}
+void loop() {
+ myservo.write(45);
+ delay(1000);
+ myservo.write(90);
+ delay(1000);
+ myservo.write(135);
+ delay(1000);
+ myservo.write(180); // Servo Motor Can Rotate maximum 180 Degree.
+ delay(1000);
+}
+
+
+
+RASPBERRY PI
+Touch sensor
+
+vcc- vcc
+gnd-gnd
+data-12
+import RPi.GPIO as GPIO
+import time
+pin = 12
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+GPIO.setup(pin, GPIO.IN)
+while True:
+value = GPIO.input(pin)
+if value:
+print("touch")
+time.sleep(1)
+else:
+print("removed")
+time.sleep(1)
+print("value: ", value)
+
+
+led rasp
+
+import RPi.GPIO as GPIO
+import time
+ledPin = 40
+ledPin = 38
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+GPIO.setup(ledPin, GPIO.OUT)
+GPIO.setip(ledPin1, GPIO.OUT)
+while True:
+print("ON")
+GPIO.output(ledPin, GPIO.HIGH)
+GPIO.setip(ledPin1, GPIO.HIGH)
+time.sleep(1)
+print("OFF")
+GPIO.output(ledPin, GPIO.LOW)
+GPIO.setip(ledPin1, GPIO.LOW)
+time.sleep(1)
+
+
+servo motor
+1 port -monotr hdmi
+3rd- adapter
+5v- pin2
+data-35
+import RPi.GPIO as GPIO
+import time
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(35, GPIO.OUT)
+p = GPIO.PWM(35, 50)
+p.start(7.5)
+while True:
+p.ChangeDutyCycle(7.5)
+time.sleep(1)
+p.ChangeDutyCycle(12.5)
+time.sleep(1)
+p.ChangeDutyCycle(2.5)
+time.sleep(1)
